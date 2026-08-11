@@ -1,19 +1,18 @@
 import { NextResponse } from "next/server";
-import { driver } from "@/lib/neo4j";
+import { getNeo4jDriver } from "@/lib/neo4j";
 
 export async function GET() {
+  const driver = getNeo4jDriver();
+  const session = driver.session();
+
   try {
-    const session = driver.session();
-
     const result = await session.run(
-      "RETURN 'CognoDB connection successful!' AS message"
+      "RETURN 'Cognodb connection successful!' AS message"
     );
-
-    await session.close();
 
     return NextResponse.json({
       success: true,
-      message: result.records[0].get("message"),
+      message: result.records[0]?.get("message") ?? "Connected successfully",
     });
   } catch (error) {
     console.error("CognoDB connection error:", error);
@@ -25,5 +24,7 @@ export async function GET() {
       },
       { status: 500 }
     );
+  } finally {
+    await session.close();
   }
 }
