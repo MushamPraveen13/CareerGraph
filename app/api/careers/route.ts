@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
-import { driver } from "@/lib/neo4j";
+import { getNeo4jDriver } from "@/lib/neo4j";  
 
 export async function GET() {
-  const session = driver.session();
+  const driver = getNeo4jDriver();
+const session = driver.session();
 
   try {
     const result = await session.run(`
